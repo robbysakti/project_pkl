@@ -1,0 +1,11 @@
+{
+  "name": "sobat_miners",
+  "version": "1.0.0",
+  "description": "projek pkl",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "robby",
+  "license": "ISC"
+}
