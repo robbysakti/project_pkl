@@ -12,7 +12,7 @@ const connectDB = require('./database/db');
 connectDB();
 
 //import router
-// const categoryRouter = require('./router/categoryRouter');
+const userRouter = require('./router/userRouter');
 
 //setting cors, morgan
 app.use(cors());
