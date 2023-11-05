@@ -1,20 +1,13 @@
 <template>
-  <v-app-bar class="bg-green-darken-4">
-    <v-app-bar-title class="text-yellow-accent-2">
-      Sobat Miners
+  <v-app-bar class="bg-green-lighten-3">
+      <template v-slot:prepend><v-img src="/logo.png" style="width: 80px;"></v-img></template>
+    <v-app-bar-title class="text-green-darken-4" style="font-size: 25px;">
+      SOBAT MINERS
     </v-app-bar-title>
-    
-    <template v-slot:append>
-      <v-tabs
-        v-model="tab"
-      >
-        <v-tab href="/">Beranda</v-tab>
-        <v-tab href="/produk">Product</v-tab>
-        <v-tab ><a href="/login" style="text-decoration: none;" class="text-yellow-accent-2">Login</a></v-tab>
-      </v-tabs>
-    </template>
+    <v-btn size="large" class=" text-green-darken-4" :to="{name: 'Home'}">Beranda</v-btn>
+    <v-btn size="large" class=" text-green-darken-4" :to="{name:'ProdukDetail'}">Product</v-btn>
+    <v-btn size="large" class="bg-amber-darken-1 text-green-darken-4" :to="{name:'Admin'}">Login</v-btn>
     </v-app-bar>
 </template>
-<script setup>
-  //
+<script>
 </script>
