@@ -1,11 +1,11 @@
-const User = require("../models/User");
+const User = require('../model/User');
 
 module.exports = {
     addUser : async(req, res) => {
         try {
             const { 
                 userName,
-                email,
+                Name,
                 role,
                 password,
                 passwordConfirm
@@ -18,12 +18,9 @@ module.exports = {
             const cekUserName = await User.find({
                 userName: userName
             }).count();
-            const cekEmail = await User.find({
-                email: email
-            }).count();
 
-            if(cekUserName + cekEmail > 0) {
-                throw Error("Email or Username already registered");
+            if(cekUserName > 0) {
+                throw Error("Username already registered");
             }
 
             const user = new User(req.body);
@@ -48,7 +45,7 @@ module.exports = {
     },
     updateUser : async(req, res) => {
         const updates = Object.keys(req.body);
-        const allowUpdates = [ "userName", "email", "role", "password", "passwordConfirm" ];
+        const allowUpdates = [ "userName", "Name", "password", "passwordConfirm" ];
         const isValidOperation = updates.every((update) => allowUpdates.includes(update));
         if (!isValidOperation) {
             return res.status(403).json({ message : "Invalid key parameter" })
@@ -85,12 +82,12 @@ module.exports = {
     },
     login : async(req, res) => {
         try {
-            const { email, password } = req.body
-            const user = await User.findByCredentials(email, password);
+            const { userName, password } = req.body
+            const user = await User.findByCredentials(userName, password);
             const token = await user.generateAuthToken();
-            const username = user.userName;
+            userName = user.userName;
 
-            res.status(200).json({ username, token });
+            res.status(200).json({ userName, token });
         }
         catch(err) {
             res.status(400).json({ message: err.message });

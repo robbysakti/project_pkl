@@ -13,6 +13,9 @@ connectDB();
 
 //import router
 const userRouter = require('./router/userRouter');
+const produkRouter = require('./router/produkRouter');
+const categoryRouter = require('./router/categoryRouter');
+const bookingRouter = require('./router/bookingRouter');
 
 //setting cors, morgan
 app.use(cors());
@@ -39,10 +42,13 @@ app.use(function (req, res, next) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 //url
-// app.use('/api/category', categoryRouter);
+app.use('/api/user', userRouter);
+app.use('/api/produk', produkRouter);
+app.use('/api/category', categoryRouter);
 
 //client
 // app.use('/api/client', homeRouter);
+app.use('/api/booking', bookingRouter);
 
 
 app.listen(port, () => {
