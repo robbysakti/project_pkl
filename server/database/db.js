@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const connectDB = async() => {
     try{
-    const con = await mongoose.connect("mongodb://localhost:27017", {
+    const con = await mongoose.connect("mongodb://localhost:27017/sobat_miners", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: true
+        // useCreateIndex: true,
+        // useFindAndModify: true
     });
 
     console.log(`mongodb connected : ${con.connection.host}:${con.connection.port}`);

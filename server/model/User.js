@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         required: [true, "Please Input User Name!"]
     },
-    Name: {
+    name: {
         type: String
     },
     role: {
@@ -83,7 +83,7 @@ userSchema.statics.findByCredentials = async (userName, password) => {
         throw Error("User Not Found!");
     }
 
-    const isMatch = bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
         throw Error("Wrong Password!");
@@ -97,14 +97,14 @@ userSchema.pre("save", async function(next){
     const user = this;
 
     if (user.isModified("password")) {
-        user.password = bcrypt.hash(user.password, 9);
+        user.password = await bcrypt.hash(user.password, 9);
     }
     if (user.isModified("passwordConfirm")) {
-        user.passwordConfirm = bcrypt.hash(user.passwordConfirm, 9);
+        user.passwordConfirm = await bcrypt.hash(user.passwordConfirm, 9);
     }
     next();
 });
 
 const User = mongoose.model('user', userSchema);
 
-module.exports = { User }
+module.exports = User

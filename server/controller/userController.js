@@ -5,7 +5,7 @@ module.exports = {
         try {
             const { 
                 userName,
-                Name,
+                name,
                 role,
                 password,
                 passwordConfirm
@@ -85,9 +85,9 @@ module.exports = {
             const { userName, password } = req.body
             const user = await User.findByCredentials(userName, password);
             const token = await user.generateAuthToken();
-            userName = user.userName;
+            const name = user.name;
 
-            res.status(200).json({ userName, token });
+            res.status(200).json({ name, token });
         }
         catch(err) {
             res.status(400).json({ message: err.message });

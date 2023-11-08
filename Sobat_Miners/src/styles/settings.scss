@@ -8,3 +8,6 @@
 // @use 'vuetify/settings' with (
 //   $color-pack: false
 // );
+.my-swal {
+    z-index: 9999;
+}

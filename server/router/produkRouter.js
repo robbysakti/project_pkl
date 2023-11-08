@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/create', auth, checkRole("admin"), uploadMultiple, produkController.addProduk);
 router.patch('/update/:id', auth, checkRole("admin"), produkController.updateProduk);
-router.get('/read', auth, produkController.viewProduk);
+router.get('/read', produkController.viewProduk);
 router.delete('/delete/:id', auth, checkRole("admin"), produkController.deleteProduk);
 
 // add image item._id
