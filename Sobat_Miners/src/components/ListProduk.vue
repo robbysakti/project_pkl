@@ -41,11 +41,12 @@
             <!-- <v-card-title>Tonight's availability</v-card-title> -->
             <v-card-actions>
               <v-btn
-                color="deep-purple-lighten-2"
+                v-if="token"
+                color="green-darken-4"
                 variant="text"
-                @click=""
+                @click="pesan(data._id)"
               >
-                Reserve
+                Pesan
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -62,18 +63,18 @@
     name: "produk-list",
     data() {
       return {
+        token: JSON.parse(localStorage.getItem("token")),
         produk: {}
       };
     },
     methods: {
       async loadProduk() {
-        const { data } = await axios.get('produk/read', {
-          headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTQ3OGE2N2YyOWFlOWE0ZWFhYzE5NTkiLCJpYXQiOjE2OTkxODczMzYsImV4cCI6MTY5OTI3MzczNn0.gcR9xsvBl_Lwn2fF7AmNEl3W8Bwmw-iJPVZ8xuDFfag"
-          }
-        })
+        const data = await axios.get('produk/read')
         this.produk = data
         console.log(this.produk)
+      },
+      async pesan(produk) {
+        console.log(produk)
       }
     },
     beforeMount() {

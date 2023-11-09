@@ -5,7 +5,7 @@
       SOBAT MINERS
     </v-app-bar-title>
     <v-btn size="large" class=" text-green-darken-4" :to="{name: 'Home'}">Beranda</v-btn>
-    <v-btn size="large" class=" text-green-darken-4" :to="{name:'ProdukDetail'}">Product</v-btn>
+    <v-btn size="large" class=" text-green-darken-4" :to="{name:'KoinShop'}">Koin Shop</v-btn>
     <v-btn size="large" class="bg-amber-darken-1 text-green-darken-4" v-if="!token" @click="showLogin = true">Login</v-btn>
     <v-btn size="large" class="bg-amber-darken-1 text-green-darken-4" v-if="token" @click="logout()">Logout</v-btn>
   </v-app-bar>
@@ -49,14 +49,14 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    color="blue-darken-1"
+                    color="green-darken-4"
                     variant="text"
                     type="submit"
                 >
                     Masuk
                 </v-btn>
                 <v-btn
-                    color="blue-darken-1"
+                    color="green-darken-4"
                     variant="text"
                     @click="showLogin = false"
                 >
@@ -75,13 +75,12 @@
     name: "login",
     data() {
         return {
-            user: {},
             token: JSON.parse(localStorage.getItem("token")),
             showLogin: false,
             rules: [(value) => {
                 if (value) return true
 
-                return 'Mohon isi data!'
+                return 'Mohon isi!'
             }],
             userName: null,
             password: null
@@ -119,10 +118,6 @@
 
             this.$router.go('/')
         },
-    },
-    mounted() {
-        console.log(this.user);
-        console.log("Bearer " + this.token);
     }
 }
 </script>

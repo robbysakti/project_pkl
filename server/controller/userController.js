@@ -86,8 +86,9 @@ module.exports = {
             const user = await User.findByCredentials(userName, password);
             const token = await user.generateAuthToken();
             const name = user.name;
+            const role = user.role;
 
-            res.status(200).json({ name, token });
+            res.status(200).json({ name, role, token });
         }
         catch(err) {
             res.status(400).json({ message: err.message });

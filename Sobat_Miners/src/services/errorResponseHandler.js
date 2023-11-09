@@ -12,7 +12,7 @@ function errorResponseHandler(error) {
             customClass: {
                 container: 'my-swal'
             },
-            title: 'gagal',
+            title: 'Gagal..!',
             text: message,
             icon: 'warning'
         })
