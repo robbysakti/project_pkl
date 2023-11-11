@@ -30,7 +30,12 @@
 
             <v-card-text>
               <div class="my-4 text-subtitle-1">
-                {{ data.produkPrice }}
+                {{ 
+                  new Intl.NumberFormat("en-ID", {
+                    style: "currency",
+                    currency: "IDR"
+                  }).format(data.produkPrice) 
+                }}
               </div>
 
               <div>{{ data.description }}</div>
