@@ -75,7 +75,7 @@
     name: "login",
     data() {
         return {
-            token: JSON.parse(localStorage.getItem("token")),
+            token: JSON.parse(localStorage.getItem("token-customer")),
             showLogin: false,
             rules: [(value) => {
                 if (value) return true
@@ -102,8 +102,8 @@
                         Authorization : "Bearer " + res.data.token
                     }
                 })
-                localStorage.setItem("token", JSON.stringify(res.data.token));
-                localStorage.setItem("user", JSON.stringify(user_info));
+                localStorage.setItem("token-customer", JSON.stringify(res.data.token));
+                localStorage.setItem("customer", JSON.stringify(user_info));
             })
             
             this.$router.go('/')
@@ -114,7 +114,8 @@
                     Authorization: "Bearer " + this.token
                 }
             });
-            localStorage.clear()
+            localStorage.removeItem("customer")
+            localStorage.removeItem("token-customer")
 
             this.$router.go('/')
         },

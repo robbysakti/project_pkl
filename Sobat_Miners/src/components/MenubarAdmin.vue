@@ -23,7 +23,8 @@
 
       <v-list density="compact" nav>
         <v-list-item prepend-icon="mdi-home-city" title="Produk"></v-list-item>
-        <v-list-item prepend-icon="mdi-account" title="My Account" value=""></v-list-item>
+        <v-list-item prepend-icon="mdi-account" title="Category"></v-list-item>
+        <v-list-item prepend-icon="mdi-account" title="User"></v-list-item>
         <v-list-item prepend-icon="mdi-account-group-outline" title="Logout"></v-list-item>
       </v-list>
     </v-navigation-drawer>

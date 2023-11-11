@@ -54,6 +54,7 @@
 <script>
   import axios from '@/services/api';
   import Swal from 'sweetalert2';
+  import router from '@/router';
 
   export default {
     data() {
@@ -82,16 +83,17 @@
             Swal.fire('Restricted', 'This page for admin only', 'info');
             return
           }
-          const user_info = await axios.get("/user/info", {
+          await axios.get("/user/info", {
             headers : {
               Authorization : "Bearer " + res.data.token
             }
+          })
+          .then((res) => {
+            localStorage.setItem("token", JSON.stringify(res.data.token));
+            localStorage.setItem("user", JSON.stringify(res.data));
+            router.push('/admin/produk');
           });
-          localStorage.setItem("token", JSON.stringify(res.data.token));
-          localStorage.setItem("user", JSON.stringify(user_info));
         })
-
-        this.$router.push('/admin/produk')
       }
     }
 }

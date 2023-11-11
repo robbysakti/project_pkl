@@ -63,15 +63,14 @@
     name: "produk-list",
     data() {
       return {
-        token: JSON.parse(localStorage.getItem("token")),
+        token: JSON.parse(localStorage.getItem("token-customer")),
         produk: {}
       };
     },
     methods: {
       async loadProduk() {
         const data = await axios.get('produk/read')
-        this.produk = data
-        console.log(this.produk)
+        this.produk = data.data
       },
       async pesan(produk) {
         console.log(produk)
