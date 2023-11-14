@@ -8,7 +8,7 @@
         <v-card-title class="text-amber-darken-1 bg-green-darken-4">
           <span class="text-h5">Login User</span>
         </v-card-title>
-        <v-form validate-on="submit lazy" @submit.prevent="newProduk()">
+        <v-form validate-on="submit lazy" @submit.prevent="baruSubmit()">
             <v-card-text>
                 <v-container>
                     <v-row>
@@ -128,7 +128,7 @@
                 v-for="item in produk"
                 :key="item._id"
               >
-                <td>{{ item.produkName }}</td>
+                <td>{{ item.produkName.toUpperCase() }}</td>
                 <td>{{ 
                   new Intl.NumberFormat("en-ID", {
                     style: "currency",
@@ -137,7 +137,14 @@
                 }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.category.categoryName }}</td>
-                <td>{{ item.image[0].imageUrl }}</td>
+                <td>
+                  <v-btn
+                    color="green-darken-4"
+                    variant="text"
+                  >
+                  View Gambar
+                  </v-btn>
+                </td>
                 <td>
                   <v-btn
                     color="green-darken-4"
@@ -184,8 +191,8 @@
                 produkPrice: null,
                 description: null,
                 category: null,
-                image: null
-
+                image: null,
+                imageArray: []
             }
         },
         components: {
@@ -193,8 +200,15 @@
         },
         methods: {
             async loadProduk() {
-                const data = await axios.get('produk/read')
-                this.produk = data.data
+                await axios.get('produk/read')
+                .then((res) => {
+                  this.produk = res.data
+                })
+                .catch(err => {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+                  console.log(err)
+                })
             },
             async loadCategory() {
                 await axios.get('category/read', {
@@ -207,41 +221,57 @@
                     this.pilihanCateg.push(categ)
                   });
                 })
-                .catch(err => {
-                  localStorage.clear()
-                  console.log(err)
-                })
             },
-            async newProduk() {
-                await axios.post('produk/create', {
-                  produkName: this.produkName,
-                  produkPrice: this.produkPrice,
-                  description: this.description,
-                  category: this.category,
-                  image: this.image
-                }, {
+            async baruSubmit() {
+              const params = new FormData()
+              params.append("produkName", this.produkName)
+              params.append("produkPrice", this.produkPrice)
+              params.append("description", this.description)
+              params.append("category", this.category)
+
+              // if(this.image.length !== 0) {
+                  // for(let i = 0; i < this.image.length; i++) {
+                    this.imageArray.push(this.image)
+                    params.append("image", this.imageArray)
+                  // }
+              // }
+              console.log(this.imageArray);
+              for (var pair of params.entries()) {
+                  console.log(pair);
+              }
+              // console.log(params.entries())
+              this.newProduk(params)
+            },
+            async newProduk(params) {
+                await axios.post('produk/create', params, {
                   headers: {
                     Authorization: 'Bearer ' + this.token
                   }
                 })
-            },
-            async editProduk(idProd) {
-                await axios.patch('produk/update/' + idProd, {
-                  produkName: this.produkName,
-                  produkPrice: this.produkPrice,
-                  description: this.description,
-                  category: this.category
-                }, {
-                  headers: {
-                    Authorization: 'Bearer ' + this.token
-                  }
+                .then((res) => {
+                  console.log(res.data)
                 })
             },
+            // async editProduk(idProd) {
+            //     await axios.patch('produk/update/' + idProd, {
+            //       produkName: this.produkName,
+            //       produkPrice: this.produkPrice,
+            //       description: this.description,
+            //       category: this.category
+            //     }, {
+            //       headers: {
+            //         Authorization: 'Bearer ' + this.token
+            //       }
+            //     })
+            // },
             async delProduk(idProd) {
-                await axios.delete('produk/update/' + idProd, {
+                await axios.delete('produk/delete/' + idProd, {
                   headers: {
                     Authorization: 'Bearer ' + this.token
                   }
+                })
+                .then((res) => {
+                  router.go('/')
                 })
             },
         },
@@ -249,8 +279,12 @@
           if(!this.token) {
               router.push('/admin/login');
           }
-          this.loadProduk();
+        },
+        mounted() {
+          // setTimeout(() => {this.loadProduk();}, 2000)
+          this.loadProduk()
+          
           this.loadCategory();
-        }
+        },
     }
 </script>

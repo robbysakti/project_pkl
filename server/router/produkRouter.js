@@ -7,7 +7,7 @@ const checkRole = require('../middleware/checkRole');
 
 const router = express.Router();
 
-router.post('/create', auth, checkRole("admin"), uploadMultiple, produkController.addProduk);
+router.post('/create', auth, checkRole("admin"), uploadSingle, produkController.addProduk);
 router.patch('/update/:id', auth, checkRole("admin"), produkController.updateProduk);
 router.get('/read', produkController.viewProduk);
 router.delete('/delete/:id', auth, checkRole("admin"), produkController.deleteProduk);

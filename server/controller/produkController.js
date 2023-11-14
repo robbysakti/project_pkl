@@ -22,14 +22,14 @@ module.exports = {
                 categoryDb.produk.push({ _id: produk._id });
                 await categoryDb.save();
 
-                for (let i = 0; i < req.files.length; i++) {
+                // for (let i = 0; i < req.files.length; i++) {
                     const imageSave = await Image.create({
-                        imageUrl: `images/${req.files[i].filename}`
+                        imageUrl: `images/${req.files.filename}`
                     });
                     produk.image.push({ _id: imageSave._id });
                     await produk.save();
-                }
-                res.status(201).json(produk);
+                // }
+                res.status(201).json({prod: produk, img:req.files});
             } else {
                 return res.status(400).json({ message: "Image not found!" });
             }
@@ -69,8 +69,8 @@ module.exports = {
 
         try {
             const produk = await Produk.findById(req.params.id)
-            populate({ path: "category", select: "id categoryName" }).
-            populate({ path: "image", select: "id imageUrl" });
+            .populate({ path: "category", select: "id categoryName" })
+            .populate({ path: "image", select: "id imageUrl" });
 
             updates.forEach((update) => {
                 produk[update] = req.body[update];
@@ -105,7 +105,7 @@ module.exports = {
                     Image.findOne({ _id: produk.image[i]._id }).
                     then((image) => {
                         fs.unlink(path.join(`public/${image.imageUrl}`));
-                        image.remove();
+                        image.deleteOne();
                     }).
                     catch((error) => {
                         res.status(500).json({ message: error.message });
@@ -113,7 +113,7 @@ module.exports = {
                 }
             }
 
-            await produk.remove()
+            await produk.deleteOne()
                 .then(() => deleteCategory())
                 .then(() => deleteImage())
             res.status(200).json({ message: "Produk deleted" });

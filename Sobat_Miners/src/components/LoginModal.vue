@@ -83,13 +83,13 @@
             Swal.fire('Restricted', 'This page for admin only', 'info');
             return
           }
+          localStorage.setItem("token", JSON.stringify(res.data.token));
           await axios.get("/user/info", {
             headers : {
               Authorization : "Bearer " + res.data.token
             }
           })
           .then((res) => {
-            localStorage.setItem("token", JSON.stringify(res.data.token));
             localStorage.setItem("user", JSON.stringify(res.data));
             router.push('/admin/produk');
           });
