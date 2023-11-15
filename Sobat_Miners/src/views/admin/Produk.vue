@@ -53,13 +53,14 @@
                     </v-row>
                     <v-row>
                     <v-col cols="12">
-                        <v-text-field
-                        label="Gambar"
-                        type="file"
+                      <v-file-input 
+                        label="File Gambar"
                         clearable
+                        variant="solo-filled"
                         v-model="image"
                         :rules="rules"
-                        ></v-text-field>
+                        >
+                      </v-file-input>
                     </v-col>
                     </v-row>
                 </v-container>
@@ -191,8 +192,7 @@
                 produkPrice: null,
                 description: null,
                 category: null,
-                image: null,
-                imageArray: []
+                image: null
             }
         },
         components: {
@@ -207,7 +207,6 @@
                 .catch(err => {
                   localStorage.removeItem('token');
                   localStorage.removeItem('user');
-                  console.log(err)
                 })
             },
             async loadCategory() {
@@ -229,18 +228,13 @@
               params.append("description", this.description)
               params.append("category", this.category)
 
-              // if(this.image.length !== 0) {
-                  // for(let i = 0; i < this.image.length; i++) {
-                    this.imageArray.push(this.image)
-                    params.append("image", this.imageArray)
-                  // }
-              // }
-              console.log(this.imageArray);
-              for (var pair of params.entries()) {
-                  console.log(pair);
+              if(this.image.length !== 0) {
+                  for(let i = 0; i < this.image.length; i++) {
+                    params.append("image", this.image[i]);
+                  }
               }
-              // console.log(params.entries())
-              this.newProduk(params)
+              
+              this.newProduk(params);
             },
             async newProduk(params) {
                 await axios.post('produk/create', params, {
@@ -249,7 +243,7 @@
                   }
                 })
                 .then((res) => {
-                  console.log(res.data)
+                  router.go('/');
                 })
             },
             // async editProduk(idProd) {
@@ -270,8 +264,8 @@
                     Authorization: 'Bearer ' + this.token
                   }
                 })
-                .then((res) => {
-                  router.go('/')
+                .then(() => {
+                  router.go('/');
                 })
             },
         },

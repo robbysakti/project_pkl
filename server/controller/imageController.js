@@ -2,6 +2,7 @@ const Produk = require('../model/Produk');
 const Image = require('../model/Image');
 const fs = require('fs-extra');
 const path = require('path');
+const { existsSync } = require('fs');
 
 module.exports = {
     addImageProduk : async(req, res) => {
@@ -52,7 +53,13 @@ module.exports = {
             }
             await image.remove()
                 .then(() => deleteImageOnProduk())
-                .then(() => fs.unlink(path.join(`public/images/${image.imageUrl}`)));
+                .then(() => {
+                    if (!existsSync(path.join(`public/images/${image.imageUrl}`))) {
+                        return 'No File'
+                    }
+                    
+                    fs.unlink(path.join(`public/images/${image.imageUrl}`))
+                });
             res.status(200).json({ message: "Image deleted" });
         }
         catch(err) {

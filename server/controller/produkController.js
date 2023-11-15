@@ -3,6 +3,7 @@ const Category = require('../model/Category');
 const Image = require('../model/Image');
 const fs = require('fs-extra');
 const path = require('path');
+const { existsSync } = require('fs');
 
 module.exports = {
     addProduk : async (req, res) => {
@@ -22,13 +23,13 @@ module.exports = {
                 categoryDb.produk.push({ _id: produk._id });
                 await categoryDb.save();
 
-                // for (let i = 0; i < req.files.length; i++) {
+                for (let i = 0; i < req.files.length; i++) {
                     const imageSave = await Image.create({
-                        imageUrl: `images/${req.files.filename}`
+                        imageUrl: `images/${req.files[i].filename}`
                     });
                     produk.image.push({ _id: imageSave._id });
                     await produk.save();
-                // }
+                }
                 res.status(201).json({prod: produk, img:req.files});
             } else {
                 return res.status(400).json({ message: "Image not found!" });
@@ -104,8 +105,12 @@ module.exports = {
                 for(let i = 0; i < produk.image.length; i++) {
                     Image.findOne({ _id: produk.image[i]._id }).
                     then((image) => {
-                        fs.unlink(path.join(`public/${image.imageUrl}`));
                         image.deleteOne();
+
+                        if (!existsSync(path.join(`public/images/${image.imageUrl}`))) {
+                            return 'No File'
+                        }
+                        fs.unlink(path.join(`public/${image.imageUrl}`));
                     }).
                     catch((error) => {
                         res.status(500).json({ message: error.message });
