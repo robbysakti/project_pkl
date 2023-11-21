@@ -44,6 +44,30 @@ const routes = [
         // which is lazy-loaded when the route is visited.
         component: () => import(/* webpackChunkName: "home" */ '@/views/admin/Produk.vue'),
       },
+      {
+        path: 'user_info',
+        name: 'UserInfo',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/admin/User.vue'),
+      },
+      {
+        path: 'history_topup',
+        name: 'UserTopup',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/admin/HistoryTopup.vue'),
+      },
+      {
+        path: 'category',
+        name: 'Category',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/admin/Category.vue'),
+      },
     ],
   },
 ]

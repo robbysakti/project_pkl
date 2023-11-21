@@ -9,17 +9,19 @@ const TopUpSchema = new mongoose.Schema({
     user: {
         _id: {
             type: ObjectId,
-            ref: "User"
+            ref: "User",
+            required: true
         },
-        name: { type: String, required: true }
+        name: { type: String }
     },
     total: { type: Number, required: true },
     admin: {
         _id: {
             type: ObjectId,
-            ref: "User"
+            ref: "User",
+            required: true
         },
-        name: { type: String, required: true }
+        name: { type: String }
     },
 });
 

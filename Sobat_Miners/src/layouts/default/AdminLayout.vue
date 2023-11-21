@@ -18,11 +18,14 @@
   const token = JSON.parse(localStorage.getItem("token"));
 
   onBeforeMount(() => {
-    if(token) {
-      router.push('/admin/produk');
+    try{
+      if(!token) {
+        router.push('/admin/login');
+      }
     }
-    if(!token) {
-      router.push('/admin/login');
+    catch(err) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
     }
   })
 </script>

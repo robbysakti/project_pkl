@@ -6,8 +6,8 @@
       @click="rail = false"
     >
       <v-list-item
-        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-        title="John Leider"
+        prepend-icon="mdi-account"
+        :title="admin.name"
         nav
       >
         <template v-slot:append>
@@ -22,9 +22,9 @@
       <v-divider></v-divider>
 
       <v-list density="compact" nav>
-        <v-list-item prepend-icon="mdi-home-city" title="Produk"></v-list-item>
-        <v-list-item prepend-icon="mdi-account" title="Category"></v-list-item>
-        <v-list-item prepend-icon="mdi-account" title="User"></v-list-item>
+        <v-list-item prepend-icon="mdi-home-city" title="Produk" :to="{name:'Produk'}"></v-list-item>
+        <v-list-item prepend-icon="mdi-home-city" title="Category" :to="{name:'Category'}"></v-list-item>
+        <v-list-item prepend-icon="mdi-account-group-outline" title="User" :to="{name:'UserInfo'}"></v-list-item>
         <v-list-item prepend-icon="mdi-account-group-outline" title="Logout"></v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -33,9 +33,13 @@
     export default {
         data () {
         return {
+            admin: JSON.parse(localStorage.getItem('user')),
             drawer: true,
             rail: true,
         }
         },
+        mounted() {
+          // console.log(this.admin.name);
+        }
     }
 </script>

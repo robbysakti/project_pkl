@@ -11,7 +11,7 @@
 
     onBeforeMount(() => {
         if(token) {
-            router.push('/admin/produk');
+            router.push({ name: 'Produk' });
         }
     })
 </script>  

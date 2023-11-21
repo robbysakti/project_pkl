@@ -59,8 +59,8 @@ module.exports = {
             const { user } = booking;
             const customer = await User.findOne({ _id: user });
 
-            if (customer.saldo > 0) {
-                res.status(400).json({ message: "Saldo tidak cukup!" });
+            if (booking.total > customer.saldo) {
+                return res.status(400).json({ message: "Saldo tidak cukup!" });
             }
 
             customer.saldo -= booking.total;
@@ -103,7 +103,7 @@ module.exports = {
             }
 
             await booking.remove()
-            res.status(200).json(booking);
+            res.status(200).json({ message: "Data booking deleted" });
         }
         catch(err) {
             res.status(500).json({ message: err.message });

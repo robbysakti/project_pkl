@@ -14,11 +14,13 @@ const transaksiSchema = new mongoose.Schema({
         name: { type: String, required: true },
         price: { type: Number, required: true },
     },
+    jumlah: { type: Number, required: true },
     total: { type: Number, required: true },
-    user: [{
+    user: {
         type: ObjectId,
         ref: "User"
-    }],
+    },
+    status: { type: String, default: "process" }
 });
 
 module.exports = mongoose.model("Transaksi", transaksiSchema);
