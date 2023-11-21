@@ -12,6 +12,9 @@ module.exports = {
             if(produkId === undefined) {
                 return res.status(400).json({ message: "Please select id produk" });
             }
+            if(jumlah <= 0 || typeof jumlah !== 'number') {
+                return res.status(400).json({ message: "Masukkan jumlah yang valid" });
+            }
             
             const produk = await Produk.findOne({ _id: produkId });
             if(!produk) {
@@ -40,7 +43,7 @@ module.exports = {
             }
             const addTransaksi = await Transaksi.create(transaksi);
 
-            res.status(201).json({ message: "Success add transaksi", addTransaksi });
+            res.status(201).json({ message: "Success add transaksi", transaksi: addTransaksi });
         }
         catch(err) {
             res.status(500).json({ message: err.message });
@@ -54,8 +57,9 @@ module.exports = {
             }
             const transaksi = await Transaksi.find({ user: customer._id });
             let totalCheckout = 0;
+            let poinTransaksi = 0;
             transaksi.forEach( data => {
-                totalCheckout += data.total;
+                totalCheckout += parseFloat(data.total);
             })
 
             if (totalCheckout > customer.saldo) {
@@ -63,7 +67,9 @@ module.exports = {
             }
 
             customer.saldo -= totalCheckout;
-            transaksi.status = "Clear"
+            poinTransaksi = totalCheckout / 10000;
+            customer.poin += parseInt(poinTransaksi);
+            transaksi.status = "Clear";
 
             await customer.save();
             await transaksi.save();

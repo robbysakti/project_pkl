@@ -16,6 +16,9 @@ module.exports = {
             ) {
                 return res.status(400).json({ message: "Please input all data" });
             }
+            if(jumlah <= 0 || typeof jumlah !== 'number') {
+                return res.status(400).json({ message: "Masukkan jumlah yang valid" });
+            }
             
             const produk = await Produk.findOne({ _id: produkId });
             if(!produk) {
@@ -24,7 +27,7 @@ module.exports = {
 
             let bookingEndDate = new Date(bookingStartDate.valueOf() + (jumlah * 60000));
             let total = produk.produkPrice * jumlah;
-            let tax = total * 0.1;
+            // let tax = total * 0.1;
 
             const invoice = Math.floor(1000000 + Math.random() * 900000);
             const newBooking = {
@@ -37,12 +40,12 @@ module.exports = {
                     price : produk.produkPrice
                 },
                 jumlah,
-                total : total += tax,
+                total : total,
                 user : req.user._id
             }
             const booking = await Booking.create(newBooking);
 
-            res.status(201).json({ message: "Success Booking", booking });
+            res.status(201).json({ message: "Success Booking", booking: booking });
         }
         catch(err) {
             if(req.file) {
@@ -55,16 +58,25 @@ module.exports = {
         const { id } = req.params;
 
         try {
-            const booking = await Booking.findOne({ _id: id });
-            const { user } = booking;
-            const customer = await User.findOne({ _id: user });
+            const customer = await User.findOne({ _id: req.user._id });
+            if(!customer) {
+                return res.status(400).json({ message: "User not found" });
+            }
+            const booking = await Booking.find({ user: customer._id });
+            let totalCheckout = 0;
+            let poinBooking = 0;
+            booking.forEach( data => {
+                totalCheckout += parseFloat(data.total);
+            })
 
-            if (booking.total > customer.saldo) {
+            if (totalCheckout > customer.saldo) {
                 return res.status(400).json({ message: "Saldo tidak cukup!" });
             }
 
-            customer.saldo -= booking.total;
-            booking.status = "Clear"
+            customer.saldo -= totalCheckout;
+            poinBooking = totalCheckout / 10000;
+            customer.poin += parseInt(poinBooking);
+            booking.status = "Clear";
 
             await customer.save();
             await booking.save();
