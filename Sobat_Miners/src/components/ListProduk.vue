@@ -49,7 +49,7 @@
                 v-if="token"
                 color="green-darken-4"
                 variant="text"
-                @click="pesan(data._id, true)"
+                @click="pesan(data, true)"
               >
                 Pesan
               </v-btn>
@@ -143,6 +143,7 @@
 
 <script>
   import axios from '@/services/api';
+  import Swal from 'sweetalert2';
 
   export default {
     name: "produk-list",
@@ -173,6 +174,10 @@
         await axios.post('transaksi/create', {
           produkId : this.AddChart._id,
           jumlah : parseInt(this.jumlah)
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + this.token
+          }
         })
         .then((res) => {
           this.modalPesan = false;
