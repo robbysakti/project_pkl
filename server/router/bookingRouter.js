@@ -6,9 +6,10 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 router.post('/create', auth, bookingController.createBooking);
-router.get('/read', auth, bookingController.viewBooking);
+router.get('/read_checkout', auth, bookingController.checkOut);
+router.get('/read', auth, bookingController.viewHistoryBooking);
 router.get('/read/:id', auth, bookingController.showDetailBooking);
 router.delete('/delete/:id', auth, bookingController.deleteBooking);
-router.put('/checkout/:id', auth, bookingController.checkOut);
+router.put('/checkout', auth, bookingController.checkOut);
 
 module.exports = router;

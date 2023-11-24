@@ -18,6 +18,7 @@ const categoryRouter = require('./router/categoryRouter');
 const bookingRouter = require('./router/bookingRouter');
 const topUpRouter = require('./router/topUpRouter');
 const transaksiRouter = require('./router/transaksiRouter');
+const koinProdRouter = require('./router/koinProdRouter');
 
 //setting cors, morgan
 app.use(cors());
@@ -46,6 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //url
 app.use('/api/user', userRouter);
 app.use('/api/produk', produkRouter);
+app.use('/api/koin_produk', koinProdRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/topup', topUpRouter);
 

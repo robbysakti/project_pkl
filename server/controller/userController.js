@@ -43,9 +43,25 @@ module.exports = {
             res.status(500).json({ message: err.message });
         }
     },
+    viewUserDetail : async(req, res) => {
+        try {
+            const { id } = req.params;
+            const user = await User.findOne({ _id: id });
+
+            if (!user) {
+                res.status(404).json({ message: "No data user found" });
+                return
+            }
+                
+            return res.status(200).json(user);
+        }
+        catch(err) {
+            res.status(500).json({ message: err.message });
+        }
+    },
     updateUser : async(req, res) => {
         const updates = Object.keys(req.body);
-        const allowUpdates = [ "userName", "Name", "password", "passwordConfirm" ];
+        const allowUpdates = [ "userName", "name", "password", "passwordConfirm" ];
         const isValidOperation = updates.every((update) => allowUpdates.includes(update));
         if (!isValidOperation) {
             return res.status(403).json({ message : "Invalid key parameter" })

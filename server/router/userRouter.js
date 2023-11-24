@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/create', userController.addUser);
 router.patch('/update/:id', auth, userController.updateUser);
 router.get('/read', auth, userController.viewUser);
+router.get('/read/:id', auth, userController.viewUserDetail);
 router.delete('/delete/:id', auth, checkRole("admin"), userController.deleteUser);
 
 router.post('/login', userController.login);

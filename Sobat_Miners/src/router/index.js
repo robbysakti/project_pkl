@@ -21,6 +21,30 @@ const routes = [
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () => import(/* webpackChunkName: "home" */ '@/views/customer/KoinShop.vue'),
+      },
+      {
+        path: 'transaksi',
+        name: 'Transaksi',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/customer/Transaksi.vue'),
+      },
+      {
+        path: 'cart_transaksi',
+        name: 'CartTransaksi',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/customer/KeranjangTransaksi.vue'),
+      },
+      {
+        path: 'info',
+        name: 'InfoDiri',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/customer/InfoDiri.vue'),
       }
     ],
   },

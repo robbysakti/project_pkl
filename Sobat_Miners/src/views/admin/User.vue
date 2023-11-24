@@ -64,9 +64,28 @@
       <MenubarAdmin />
       <v-main style="min-height: 700px;">
         <v-container fluid>
-          <v-table
-            fixed-header
-          >
+          <v-form validate-on="submit lazy" @submit.prevent="cariUser()">
+            <!-- <v-row>
+              <v-col cols="8">
+                <v-text-field
+                  v-model="search"
+                  label="Nama User"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-btn
+                  width="100%"
+                  height="100%"
+                  color="green-darken-4"
+                  variant="text"
+                  type="submit"
+                >
+                  Cari
+                </v-btn>
+              </v-col>
+            </v-row> -->
+          </v-form>
+          <v-table>
             <thead>
               <tr>
                 <th class="text-left">
@@ -127,6 +146,7 @@
         token: JSON.parse(localStorage.getItem("token")),
         users: {},
         userTopup: null,
+        search: '',
         rules: [(value) => {
           if (value > 0) return true
           return "Mohon isi data!"
@@ -139,6 +159,7 @@
       MenubarAdmin
     },
     methods: {
+      async cariUser() {},
       async loadUser() {
         await axios.get('user/read', {
           headers: {

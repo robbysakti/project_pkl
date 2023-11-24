@@ -1,4 +1,4 @@
-const Produk = require('../model/Produk');
+const KoinProd = require('../model/KoinProd');
 const Category = require('../model/Category');
 const Image = require('../model/Image');
 const fs = require('fs-extra');
@@ -6,31 +6,31 @@ const path = require('path');
 const { existsSync } = require('fs');
 
 module.exports = {
-    addProduk : async (req, res) => {
+    addKoinProd : async (req, res) => {
         try {
-            const { produkName, produkPrice, description, category } = req.body;
+            const { koinProdName, koinProdPrice, description, category } = req.body;
         
             if (req.files) {
                 const categoryDb = await Category.findOne({ _id: category });
-                const newProduk = new Produk({
+                const newKoinProd = new KoinProd({
                     category, //category id
-                    produkName, 
-                    produkPrice,
+                    koinProdName, 
+                    koinProdPrice,
                     description
                 });
 
-                const produk = await Produk.create(newProduk);
-                categoryDb.produk.push({ _id: produk._id });
+                const koinProd = await KoinProd.create(newKoinProd);
+                categoryDb.koinProd.push({ _id: koinProd._id });
                 await categoryDb.save();
 
                 for (let i = 0; i < req.files.length; i++) {
                     const imageSave = await Image.create({
                         imageUrl: `images/${req.files[i].filename}`
                     });
-                    produk.image.push({ _id: imageSave._id });
-                    await produk.save();
+                    koinProd.image.push({ _id: imageSave._id });
+                    await koinProd.save();
                 }
-                res.status(201).json({prod: produk, img:req.files});
+                res.status(201).json({prod: koinProd, img:req.files});
             } else {
                 return res.status(400).json({ message: "Image not found!" });
             }
@@ -42,22 +42,22 @@ module.exports = {
             res.status(500).json({ message: err.message });
         }
     },
-    viewProduk : async (req, res) => {
+    viewKoinProd : async (req, res) => {
         try {
-            const produk = await Produk.find()
+            const koinProd = await KoinProd.find()
                 .populate({ path: "category", select: "id categoryName" })
                 .populate({ path: "image", select: "id imageUrl" })
-            produk.length === 0 ? res.status(404).json({ message : "No data produk found" }) : res.status(200).json(produk);
+            koinProd.length === 0 ? res.status(404).json({ message : "No data produk found" }) : res.status(200).json(koinProd);
         }
         catch(err) {
             res.status(500).json({ message: err.message });
         }
     },
-    updateProduk : async (req, res) => {
+    updateKoinProd : async (req, res) => {
         const updates = Object.keys(req.body);
         const allowedUpdates = [
-            "produkName", 
-            "produkPrice",
+            "koinProdName", 
+            "koinProdPrice",
             "description", 
             "category"
         ];
@@ -69,41 +69,41 @@ module.exports = {
         }
 
         try {
-            const produk = await Produk.findById(req.params.id)
+            const koinProd = await KoinProd.findById(req.params.id)
             .populate({ path: "category", select: "id categoryName" })
             .populate({ path: "image", select: "id imageUrl" });
 
             updates.forEach((update) => {
-                produk[update] = req.body[update];
+                koinProd[update] = req.body[update];
             });
-            await produk.save();
-            res.status(200).json(produk);
+            await koinProd.save();
+            res.status(200).json(koinProd);
         }
         catch(err) {
             res.status(500).json({ message: err.message });
         }
     },
-    deleteProduk : async(req, res) => {
+    deleteKoinProd : async(req, res) => {
         try {
             const { id } = req.params;
-            const produk = await Produk.findOne({ _id: id });
+            const koinProd = await KoinProd.findOne({ _id: id });
             
-            if(!produk) {
+            if(!koinProd) {
                 return res.status(404).json({ message: "Produk not found" });
             }
-            const categoryDb = await Category.findOne({ _id: produk.category });
+            const categoryDb = await Category.findOne({ _id: koinProd.category });
             
             async function deleteCategory() {
-                for(let i = 0; i < categoryDb.produk.length; i++) {
-                    if(categoryDb.produk[i]._id.toString() === produk._id.toString()) {
-                        categoryDb.produk.pull({ _id: produk._id });
+                for(let i = 0; i < categoryDb.koinProd.length; i++) {
+                    if(categoryDb.koinProd[i]._id.toString() === koinProd._id.toString()) {
+                        categoryDb.koinProd.pull({ _id: koinProd._id });
                         await categoryDb.save();
                     }
                 }
             }
             async function deleteImage() {
-                for(let i = 0; i < produk.image.length; i++) {
-                    Image.findOne({ _id: produk.image[i]._id }).
+                for(let i = 0; i < koinProd.image.length; i++) {
+                    Image.findOne({ _id: koinProd.image[i]._id }).
                     then((image) => {
                         image.deleteOne();
 
@@ -118,7 +118,7 @@ module.exports = {
                 }
             }
 
-            await produk.deleteOne()
+            await koinProd.deleteOne()
                 .then(() => deleteCategory())
                 .then(() => deleteImage())
             res.status(200).json({ message: "Produk deleted" });

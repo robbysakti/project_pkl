@@ -55,8 +55,6 @@ module.exports = {
         }
     },
     checkOut : async (req, res) => {
-        const { id } = req.params;
-
         try {
             const customer = await User.findOne({ _id: req.user._id });
             if(!customer) {
@@ -76,7 +74,7 @@ module.exports = {
             customer.saldo -= totalCheckout;
             poinBooking = totalCheckout / 10000;
             customer.poin += parseInt(poinBooking);
-            booking.status = "Clear";
+            booking.status = "clear";
 
             await customer.save();
             await booking.save();
@@ -86,9 +84,18 @@ module.exports = {
             res.status(500).json({ message: err.message });
         }
     },
-    viewBooking : async (req, res) => {
+    checkOut : async (req, res) => {
         try {
-            const booking = await Booking.find();
+            const booking = await Booking.find({ user: req.user._id, status: "process" });
+            booking.length === 0 ? res.status(404).json({ message : "No data booking found" }) : res.status(200).json(booking);
+        }
+        catch(err) {
+            res.status(500).json({ message: err.message });
+        }
+    },
+    viewHistoryBooking : async (req, res) => {
+        try {
+            const booking = await Booking.find({ user: req.user._id, status: "clear" });
             booking.length === 0 ? res.status(404).json({ message : "No data booking found" }) : res.status(200).json(booking);
         }
         catch(err) {

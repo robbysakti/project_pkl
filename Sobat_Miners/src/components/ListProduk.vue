@@ -49,7 +49,7 @@
                 v-if="token"
                 color="green-darken-4"
                 variant="text"
-                @click="pesan(data, true)"
+                @click="pesan(data, data.category.categoryName, true)"
               >
                 Pesan
               </v-btn>
@@ -139,6 +139,85 @@
       </v-form>
     </v-card>
   </v-dialog>
+  <v-dialog
+    v-model="modalBooking"
+    persistent
+  >
+    <v-card>
+      <v-card-title class="text-amber-darken-1 bg-green-darken-4">
+        <span class="text-h5">Pesan</span>
+      </v-card-title>
+      <v-form validate-on="submit lazy" @submit.prevent="">
+          <v-card-text>
+              <v-container>
+                  <v-row>
+                    <v-col>
+                      <v-card
+                        class="mx-auto my-12"
+                        min-width="312"
+                        max-width="374"
+                      >
+                        <v-img
+                          cover
+                          height="250"
+                          :src="'http://localhost:3001/' + AddChart.image[0].imageUrl"
+                        ></v-img>
+
+                        <v-card-item>
+                          <v-card-title>{{ AddChart.produkName }}</v-card-title>
+
+                          <v-card-subtitle>
+                            <span class="me-1">{{ AddChart.category.categoryName }}</span>
+                          </v-card-subtitle>
+                        </v-card-item>
+
+                        <v-card-text>
+                          <div class="my-4 text-subtitle-1">
+                            {{ 
+                              new Intl.NumberFormat("en-ID", {
+                                style: "currency",
+                                currency: "IDR"
+                              }).format(AddChart.produkPrice) 
+                            }}
+                          </div>
+
+                          <div>{{ AddChart.description }}</div>
+                        </v-card-text>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field
+                      label="Jumlah Pesanan"
+                      clearable
+                      v-model="jumlah"
+                      :rules="rules"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+              </v-container>
+          </v-card-text>
+          <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                  color="green-darken-4"
+                  variant="text"
+                  type="submit"
+              >
+                  Pesan
+              </v-btn>
+              <v-btn
+                  color="green-darken-4"
+                  variant="text"
+                  @click="modalBooking = false"
+              >
+                  Batal
+              </v-btn>
+          </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -166,9 +245,15 @@
         const data = await axios.get('produk/read')
         this.produk = data.data
       },
-      async pesan(produk, show) {
-        this.modalPesan = show;
-        this.AddChart = produk;
+      async pesan(produk, kategori, show) {
+        const filter = kategori.toLowerCase();
+        if (filter == "makanan" || filter == "minuman") {
+          this.modalPesan = show;
+          this.AddChart = produk;
+        } else {
+          this.modalBooking = show;
+          this.AddChart = produk;
+        }
       },
       async tambahPesan() {
         await axios.post('transaksi/create', {

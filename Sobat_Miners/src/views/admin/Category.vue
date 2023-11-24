@@ -183,17 +183,15 @@
         })
       },
       async addCategory() {
-        const params = new FormData();
-        params.append("categoryName", this.category);
-        await axios.post('category/create', params, {
+        await axios.post('category/create', {
+          categoryName: this.category
+        }, {
           headers: {
             Authorization: 'Bearer ' + this.token
           }
         })
-        .then((res) => {
-          res.data.forEach(categ => {
-            this.Categ.push(categ)
-          });
+        .then(() => {
+          router.go();
         })
       },
       async openEditModal(categ, show) {
@@ -203,15 +201,15 @@
         this.category = this.editCateg.categoryName;
       },
       async editCategory(idCateg) {
-        const params = new FormData();
-        params.append("categoryName", this.category);
-        await axios.patch('category/update/' + idCateg, params, {
+        await axios.patch('category/update/' + idCateg, {
+          categoryName: this.category
+        }, {
           headers: {
             Authorization: 'Bearer ' + this.token
           }
         })
         .then(() => {
-          router.go('/');
+          router.go();
         })
       },
       async delCateg(idCateg) {

@@ -7,7 +7,29 @@
     <v-btn size="large" class=" text-green-darken-4" :to="{name: 'Home'}">Beranda</v-btn>
     <v-btn size="large" class=" text-green-darken-4" :to="{name:'KoinShop'}">Koin Shop</v-btn>
     <v-btn size="large" class="bg-amber-darken-1 text-green-darken-4" v-if="!token" @click="showLogin = true">Login</v-btn>
-    <v-btn size="large" class="bg-amber-darken-1 text-green-darken-4" v-if="token" @click="logout()">Logout</v-btn>
+    <!-- <v-btn size="large" class="bg-amber-darken-1 text-green-darken-4" v-if="token" @click="logout()">Logout</v-btn> -->
+    <v-btn
+      v-if="token"
+      color="bg-amber-darken-1 text-green-darken-4"
+    >
+      {{ customer.data.name }}
+      <v-menu activator="parent">
+        <v-list>
+          <v-list-item>
+            <v-btn :to="{ name: 'InfoDiri' }">Info Diri</v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn :to="{ name: 'CartTransaksi' }">Keranjang</v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn :to="{ name: 'Transaksi' }">History Belanja</v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn @click="logout()">Logout</v-btn>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-btn>
   </v-app-bar>
   <v-row justify="center">
     <v-dialog
@@ -76,6 +98,7 @@
     data() {
         return {
             token: JSON.parse(localStorage.getItem("token-customer")),
+            customer: JSON.parse(localStorage.getItem("customer")),
             showLogin: false,
             rules: [(value) => {
                 if (value) return true
