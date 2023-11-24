@@ -23,6 +23,7 @@
 
       <v-list density="compact" nav>
         <v-list-item prepend-icon="mdi-home-city" title="Produk" :to="{name:'Produk'}"></v-list-item>
+        <v-list-item prepend-icon="mdi-home-city" title="KoinProd" :to="{name:'KoinProd'}"></v-list-item>
         <v-list-item prepend-icon="mdi-home-city" title="Category" :to="{name:'Category'}"></v-list-item>
         <v-list-item prepend-icon="mdi-account-group-outline" title="User" :to="{name:'UserInfo'}"></v-list-item>
         <v-list-item prepend-icon="mdi-account-group-outline" title="Topup Log" :to="{name:'UserTopup'}"></v-list-item>

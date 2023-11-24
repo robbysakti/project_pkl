@@ -69,6 +69,14 @@ const routes = [
         component: () => import(/* webpackChunkName: "home" */ '@/views/admin/Produk.vue'),
       },
       {
+        path: 'koin_produk',
+        name: 'KoinProd',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/admin/KoinProd.vue'),
+      },
+      {
         path: 'user_info',
         name: 'UserInfo',
         // route level code-splitting
