@@ -229,6 +229,7 @@
     data() {
       return {
         token: JSON.parse(localStorage.getItem("token-customer")),
+        customer: JSON.parse(localStorage.getItem("customer")),
         rules: [(value) => {
           if (value) return true
           return "Mohon isi data!"
@@ -244,6 +245,18 @@
       async loadProduk() {
         const data = await axios.get('produk/read')
         this.produk = data.data
+      },
+      async loadAuth() {
+        const data = await axios.get('user/read/'+ this.customer.data._id, {
+          headers: {
+            Authorization: 'Bearer ' + this.token
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem('customer');
+          localStorage.removeItem('token-customer');
+          router.go();
+        })
       },
       async pesan(produk, kategori, show) {
         const filter = kategori.toLowerCase();
@@ -315,6 +328,9 @@
       // }
     },
     beforeMount() {
+      if(this.customer || this.token) {
+        this.loadAuth();
+      }
       this.loadProduk();
     }
   }

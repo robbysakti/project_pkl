@@ -16,16 +16,16 @@
       <v-menu activator="parent">
         <v-list>
           <v-list-item>
-            <v-btn :to="{ name: 'InfoDiri' }">Info Diri</v-btn>
+            <v-btn width="100%" :to="{ name: 'InfoDiri' }">Info Diri</v-btn>
           </v-list-item>
           <v-list-item>
-            <v-btn :to="{ name: 'CartTransaksi' }">Keranjang</v-btn>
+            <v-btn width="100%" :to="{ name: 'CartTransaksi' }">Keranjang</v-btn>
           </v-list-item>
           <v-list-item>
-            <v-btn :to="{ name: 'Transaksi' }">History Belanja</v-btn>
+            <v-btn width="100%" :to="{ name: 'Transaksi' }">History Belanja</v-btn>
           </v-list-item>
           <v-list-item>
-            <v-btn @click="logout()">Logout</v-btn>
+            <v-btn width="100%" @click="logout()">Logout</v-btn>
           </v-list-item>
         </v-list>
       </v-menu>

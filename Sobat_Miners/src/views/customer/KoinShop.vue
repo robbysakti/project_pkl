@@ -15,7 +15,7 @@
             ></v-img>
 
             <v-card-item>
-              <v-card-title>{{ data.produkName }}</v-card-title>
+              <v-card-title>{{ data.koinProdName }}</v-card-title>
 
               <v-card-subtitle>
                 <span class="me-1">{{ data.category.categoryName }}</span>
@@ -29,7 +29,7 @@
             </v-card-item>
 
             <v-card-text>
-              <div class="my-4 text-subtitle-1">{{ data.produkPrice }}</div>
+              <div class="my-4 text-subtitle-1">{{ data.koinProdPrice }}</div>
 
               <div>{{ data.description }}</div>
             </v-card-text>
@@ -78,7 +78,7 @@
                         ></v-img>
 
                         <v-card-item>
-                          <v-card-title>{{ AddCart.produkName }}</v-card-title>
+                          <v-card-title>{{ AddCart.koinProdName }}</v-card-title>
 
                           <v-card-subtitle>
                             <span class="me-1">{{ AddCart.category.categoryName }}</span>
@@ -87,7 +87,7 @@
 
                         <v-card-text>
                           <div class="my-4 text-subtitle-1">
-                            {{ AddCart.produkPrice }}
+                            {{ AddCart.koinProdPrice }} Koin
                           </div>
 
                           <div>{{ AddCart.description }}</div>
@@ -131,7 +131,7 @@
 
 <script>
   import axios from '@/services/api';
-  // import Swal from 'sweetalert2';
+  import Swal from 'sweetalert2';
 
   export default {
     name: "produk-list",

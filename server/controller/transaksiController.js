@@ -62,8 +62,6 @@ module.exports = {
             let poinTransaksi = 0;
             transaksi.forEach( async(data) => {
                 totalCheckout += parseFloat(data.total);
-                data.status = "clear";
-                await data.save();
             })
 
             if (totalCheckout > customer.saldo) {
@@ -74,8 +72,12 @@ module.exports = {
             poinTransaksi = totalCheckout / 10000;
             customer.poin += parseInt(poinTransaksi);
 
+            transaksi.forEach( async(data) => {
+                data.status = "clear";
+                await data.save();
+            })
             await customer.save();
-            res.status(200).json({ transaksi: transaksi, user: customer });
+            res.status(200).json({ transaksi: transaksi, user: customer, total: totalCheckout });
         }
         catch(err) {
             res.status(500).json({ message: err.message });
@@ -99,7 +101,7 @@ module.exports = {
             res.status(500).json({ message: err.message });
         }
     },
-    updateTransaki : async (req, res) => {
+    updateTransaksi : async (req, res) => {
         const updates = Object.keys(req.body);
         const allowUpdates = ["jumlah"];
         const isValidOperation = updates.every((update) => allowUpdates.includes(update));
@@ -121,7 +123,7 @@ module.exports = {
             res.status(500).json({ message: err.message });
         }
     },
-    deleteHTransaksi : async (req, res) => {
+    deleteTransaksi : async (req, res) => {
         try {
             const { id } = req.params;
             const transaksi = await Transaksi.findOne({ _id: id });
@@ -130,7 +132,7 @@ module.exports = {
                 return res.status(404).json({ message: "No data transaksi found" });
             }
 
-            await transaksi.remove()
+            await transaksi.deleteOne()
             res.status(200).json({ message: "Data transaksi deleted" });
         }
         catch(err) {
@@ -159,12 +161,16 @@ module.exports = {
             }
 
             const invoice = Math.floor(1000000 + Math.random() * 900000);
+            const total = produk.koinProdPrice * jumlah;
+            if (total > customer.poin) {
+                return res.status(400).json({ message: "Koin tidak cukup!" });
+            }
             const transaksi = {
                 invoice,
                 produk: {
                     _id: produk._id,
-                    name: produk.produkName,
-                    price: produk.produkPrice
+                    name: produk.koinProdName,
+                    price: produk.koinProdPrice
                 },
                 jumlah : jumlah,
                 total : total,
@@ -175,10 +181,6 @@ module.exports = {
             }
             const addTransaksi = await Transaksi.create(transaksi);
             
-            if (totalCheckout > customer.poin) {
-                return res.status(400).json({ message: "Koin tidak cukup!" });
-            }
-            const total = produk.produkPrice * jumlah;
             customer.poin -= total;
 
             await customer.save();

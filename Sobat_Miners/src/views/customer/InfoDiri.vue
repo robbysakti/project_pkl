@@ -93,6 +93,8 @@
           .then((res) => {
             this.name = res.data.name;
             this.userName = res.data.userName;
+            this.customer.data.saldo = res.data.saldo;
+            this.customer.data.poin = res.data.poin;
           })
         },
         async editUser() {

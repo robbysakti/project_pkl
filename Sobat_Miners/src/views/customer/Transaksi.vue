@@ -8,38 +8,45 @@
           <span class="text-h5">History Transaksi</span>
         </v-card-title>
           <v-card-text>
-            <v-container v-for="transaksi in transaksi">
+            <v-container>
                 <v-row>
                 <v-col cols="6">
-                    <div>{{ transaksi.invoice }}</div>
+                    <div>Invoice : {{ transaksiDetail.invoice }}</div>
                 </v-col>
                 <v-col cols="6">
-                    <div>{{ transaksi.produk.name }}</div>
+                    <div>Produk : {{ transaksiDetail.produk.name }}</div>
                 </v-col>
                 </v-row>
                 <v-row>
                 <v-col cols="6">
-                    <div>{{ transaksi.produk.price }}</div>
+                    <div>Harga : {{ transaksiDetail.produk.price }}</div>
                 </v-col>
                 <v-col cols="6">
-                    <div>Jumlah : {{ transaksi.jumlah }}</div>
+                    <div>Jumlah : {{ transaksiDetail.jumlah }}</div>
                 </v-col>
                 </v-row>
                 <v-row>
                 <v-col cols="12">
-                    <div>{{ transaksi.total }}</div>
+                    <div>Total : {{ transaksiDetail.total }}</div>
                 </v-col>
                 </v-row>
                 <hr/>
                 <v-row>
                 <v-col cols="6">
-                    <div>{{ transaksi.status }}</div>
+                    <div>{{ transaksiDetail.status }}</div>
                 </v-col>
                 </v-row>
             </v-container>
           </v-card-text>
           <v-card-actions>
               <v-spacer></v-spacer>
+              <v-btn
+                  color="green-darken-4"
+                  variant="text"
+                  @click="hapusHistoryTransaksi(transaksiDetail._id)"
+              >
+                  Hapus
+              </v-btn>
               <v-btn
                   color="green-darken-4"
                   variant="text"
@@ -135,6 +142,16 @@
         async openDetail(data, show) {
           this.showDetail = show;
           this.transaksiDetail = data;
+        },
+        async hapusHistoryTransaksi(id) {
+          await axios.delete('transaksi/delete/' + id, {
+            headers: {
+              Authorization: 'Bearer ' + this.token
+            }
+          })
+          .then(() => {
+            router.go();
+          })
         }
         // async viewHistoryDetail(idTopup) {
         //   await axios.get('topup/read/' + idTopup, {

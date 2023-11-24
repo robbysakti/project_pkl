@@ -344,6 +344,9 @@
                   this.produk = res.data
                 })
                 .catch(err => {
+                  if(err.response.status === 404 || err.response.status === 400) {
+                      return;
+                    }
                   localStorage.removeItem('token');
                   localStorage.removeItem('user');
                 })

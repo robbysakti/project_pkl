@@ -113,6 +113,13 @@
                     >
                       Lihat
                     </v-btn>
+                    <v-btn
+                      color="green-darken-4"
+                      variant="text"
+                      @click="openHapus(transaksi)"
+                    >
+                      Hapus
+                    </v-btn>
                   </td>
                 </tr>
               </tbody>
@@ -194,13 +201,65 @@
               },
               title: "Success Checkout!",
               icon: "success",
-              text: dt,
+              html: `
+                ${
+                  dt.forEach((data) => {
+                  `<p>
+                    invoice         : ${data.invoice}<br/>
+                    Produk          : ${data.produk.name}<br/>
+                    Harga           : ${data.produk.price}<br/>
+                    Jumlah Pesanan  : ${data.jumlah}<br/>
+                    <hr/>
+                    Total Harga     : ${data.total}<br/>
+                  </p>`
+                  })
+                  `<p>
+                    Total Checkout  : ${res.data.total}
+                  </p>`
+                }
+              `,
               cancelButtonText: "OK"
             }).then((result) => {
               if(result.isDismissed) {
                 router.go();
               }
             })
+          })
+        },
+        async openHapus(dt) {
+          Swal.fire({
+            customClass: {
+              container: "my-swal"
+            },
+            title: "Hapus dari keranjang ?",
+            icon: "warning",
+            html: `
+              <p>
+                invoice         : ${dt.invoice}<br/>
+                Produk          : ${dt.produk.name}<br/>
+                Harga           : ${dt.produk.price}<br/>
+                Jumlah Pesanan  : ${dt.jumlah}<br/>
+                <hr/>
+                Total Harga     : ${dt.total}<br/>
+              </p>
+            `,
+            cancelButtonText: "Cancel",
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: "Hapus"
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+              await axios.delete('transaksi/delete/' + dt._id, {
+                headers: {
+                  Authorization: 'Bearer ' + this.token
+                }
+              })
+              .then(() => {
+                router.go();
+              })
+            }else if (result.isDismissed) {
+              router.go();
+            }
           })
         }
       },

@@ -20,7 +20,7 @@ module.exports = {
                 });
 
                 const koinProd = await KoinProd.create(newKoinProd);
-                categoryDb.koinProd.push({ _id: koinProd._id });
+                categoryDb.produk.push({ _id: koinProd._id });
                 await categoryDb.save();
 
                 for (let i = 0; i < req.files.length; i++) {
@@ -94,9 +94,9 @@ module.exports = {
             const categoryDb = await Category.findOne({ _id: koinProd.category });
             
             async function deleteCategory() {
-                for(let i = 0; i < categoryDb.koinProd.length; i++) {
-                    if(categoryDb.koinProd[i]._id.toString() === koinProd._id.toString()) {
-                        categoryDb.koinProd.pull({ _id: koinProd._id });
+                for(let i = 0; i < categoryDb.produk.length; i++) {
+                    if(categoryDb.produk[i]._id.toString() === koinProd._id.toString()) {
+                        categoryDb.produk.pull({ _id: koinProd._id });
                         await categoryDb.save();
                     }
                 }

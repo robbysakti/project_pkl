@@ -97,6 +97,9 @@
                 <th class="text-left">
                   Saldo
                 </th>
+                <th class="text-left">
+                  Koin
+                </th>
                 <th>
                   Top Up Saldo
                 </th>
@@ -117,6 +120,7 @@
                     }).format(user.saldo)
                   }}
                 </td>
+                <td>{{ user.poin }}</td>
                 <td>
                   <v-btn
                     color="green-darken-4"
