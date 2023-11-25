@@ -5,35 +5,40 @@
     >
       <v-card>
         <v-card-title class="text-amber-darken-1 bg-green-darken-4">
-          <span class="text-h5">History Transaksi</span>
+          <span class="text-h5">History Booking</span>
         </v-card-title>
           <v-card-text>
             <v-container>
+                  <v-row>
+                  <v-col cols="6">
+                      <div>Invoice : {{ bookingDetail.invoice }}</div>
+                  </v-col>
+                  <v-col cols="6">
+                      <div>Produk : {{ bookingDetail.produk.name }}</div>
+                  </v-col>
+                  </v-row>
                 <v-row>
-                <v-col cols="6">
-                    <div>Invoice : {{ transaksiDetail.invoice }}</div>
-                </v-col>
-                <v-col cols="6">
-                    <div>Produk : {{ transaksiDetail.produk.name }}</div>
-                </v-col>
+                    <v-col cols="12">
+                        <div>Harga : {{ bookingDetail.produk.price }}</div>
+                    </v-col>
                 </v-row>
-                <v-row>
-                <v-col cols="6">
-                    <div>Harga : {{ transaksiDetail.produk.price }}</div>
-                </v-col>
-                <v-col cols="6">
-                    <div>Jumlah : {{ transaksiDetail.jumlah }}</div>
-                </v-col>
-                </v-row>
-                <v-row>
-                <v-col cols="12">
-                    <div>Total : {{ transaksiDetail.total }}</div>
-                </v-col>
-                </v-row>
+                  <v-row>
+                  <v-col cols="6">
+                    <div>Mulai : {{ new Date(bookingDetail.bookingStartDate).toLocaleString() }}</div>
+                  </v-col>
+                  <v-col cols="6">
+                      <div>Selesai : {{ new Date(bookingDetail.bookingStartDate).toLocaleString() }}</div>
+                  </v-col>
+                  </v-row>
+                  <v-row>
+                  <v-col cols="12">
+                      <div>Total Harga : {{ bookingDetail.total }}</div>
+                  </v-col>
+                  </v-row>
                 <hr/>
                 <v-row>
                 <v-col cols="6">
-                    <div>{{ transaksiDetail.status }}</div>
+                    <div>{{ bookingDetail.status }}</div>
                 </v-col>
                 </v-row>
             </v-container>
@@ -43,7 +48,7 @@
               <v-btn
                   color="green-darken-4"
                   variant="text"
-                  @click="hapusHistoryTransaksi(transaksiDetail._id)"
+                  @click="hapusHistoryBooking(bookingDetail._id)"
               >
                   Hapus
               </v-btn>
@@ -69,21 +74,21 @@
             >
               <thead>
                 <tr>
-                  <th class="text-left">
-                    Invoice
-                  </th>
-                  <th class="text-left">
-                    Produk
-                  </th>
-                  <th class="text-left">
-                    Harga
-                  </th>
-                  <th class="text-left">
-                    Jumlah
-                  </th>
-                  <th class="text-left">
-                    Total Harga
-                  </th>
+                    <th class="text-left">
+                      Invoice
+                    </th>
+                    <th class="text-left">
+                      Produk
+                    </th>
+                    <th class="text-left">
+                      Harga
+                    </th>
+                    <th class="text-left">
+                      Tanggal Booking
+                    </th>
+                    <th class="text-left">
+                      Total Harga
+                    </th>
                   <th class="text-left">
                     Check
                   </th>
@@ -91,19 +96,19 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="trans in transaksi"
-                  :key="trans._id"
+                  v-for="book in booking"
+                  :key="book._id"
                 >
-                  <td>{{ trans.invoice }}</td>
-                  <td>{{ trans.produk.name }}</td>
-                  <td>{{ trans.produk.price }}</td>
-                  <td>{{ trans.jumlah }}</td>
-                  <td>{{ trans.total }}</td>
+                    <td>{{ book.invoice }}</td>
+                    <td>{{ book.produk.name }}</td>
+                    <td>{{ book.produk.price }}</td>
+                    <td>{{ new Date(book.bookingStartDate).toLocaleString() }}</td>
+                    <td>{{ book.total }}</td>
                   <td>
                     <v-btn
                       color="green-darken-4"
                       variant="text"
-                      @click="openDetail(trans, true)"
+                      @click="openDetail(book, true)"
                     >
                       Lihat
                     </v-btn>
@@ -125,42 +130,42 @@
         return {
           token: JSON.parse(localStorage.getItem("token-customer")),
           customer: JSON.parse(localStorage.getItem("customer")),
-          transaksi: [],
+          booking: [],
           showDetail: null,
-          transaksiDetail: null
+          bookingDetail: null
         }
       },
       methods: {
         async loadAuth() {
-          const data = await axios.get('user/read/'+ this.customer.data._id, {
+            const data = await axios.get('user/read/'+ this.customer.data._id, {
             headers: {
-              Authorization: 'Bearer ' + this.token
+                Authorization: 'Bearer ' + this.token
             }
-          })
-          .catch(() => {
+            })
+            .catch(() => {
             localStorage.removeItem('customer');
             localStorage.removeItem('token-customer');
             router.go();
-          })
+            })
         },
-        async loadTransaksi() {
-          await axios.get('transaksi/read', {
+        async loadBooking() {
+          await axios.get('booking/read', {
             headers: {
               Authorization: 'Bearer ' + this.token
             }
           })
           .then((res) => {
             res.data.forEach((dt) => {
-              this.transaksi.push(dt);
+              this.booking.push(dt);
             })
           })
         },
         async openDetail(data, show) {
           this.showDetail = show;
-          this.transaksiDetail = data;
+          this.bookingDetail = data;
         },
-        async hapusHistoryTransaksi(id) {
-          await axios.delete('transaksi/delete/' + id, {
+        async hapusHistoryBooking(id) {
+          await axios.delete('booking/delete/' + id, {
             headers: {
               Authorization: 'Bearer ' + this.token
             }
@@ -184,12 +189,13 @@
         if(this.customer || this.token) {
             this.loadAuth();
         }
+        
         if(!this.token) {
           router.push('/');
         }
       },
       mounted() {
-        this.loadTransaksi();
+        this.loadBooking();
       }
     }
   </script>

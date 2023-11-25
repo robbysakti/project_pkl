@@ -138,6 +138,7 @@
     data() {
       return {
         token: JSON.parse(localStorage.getItem("token-customer")),
+        customer: JSON.parse(localStorage.getItem("customer")),
         rules: [(value) => {
           if (value) return true
           return "Mohon isi data!"
@@ -149,6 +150,18 @@
       };
     },
     methods: {
+      async loadAuth() {
+          const data = await axios.get('user/read/'+ this.customer.data._id, {
+            headers: {
+              Authorization: 'Bearer ' + this.token
+            }
+          })
+          .catch(() => {
+            localStorage.removeItem('customer');
+            localStorage.removeItem('token-customer');
+            router.go();
+          })
+        },
       async loadProduk() {
         const data = await axios.get('koin_produk/read')
         this.produk = data.data
@@ -190,6 +203,13 @@
       },
     },
     beforeMount() {
+      if(this.customer || this.token) {
+          this.loadAuth();
+      }
+      
+      if(!this.token) {
+        router.push('/');
+      }
       this.loadProduk();
     }
   }

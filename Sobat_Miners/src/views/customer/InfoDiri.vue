@@ -84,6 +84,18 @@
         }
       },
       methods: {
+        async loadAuth() {
+          const data = await axios.get('user/read/'+ this.customer.data._id, {
+            headers: {
+              Authorization: 'Bearer ' + this.token
+            }
+          })
+          .catch(() => {
+            localStorage.removeItem('customer');
+            localStorage.removeItem('token-customer');
+            router.go();
+          })
+        },
         async loadUser() {
           await axios.get('user/read/' + this.customer.data._id, {
             headers: {
@@ -114,6 +126,10 @@
         },
       },
       beforeMount() {
+        if(this.customer || this.token) {
+            this.loadAuth();
+        }
+        
         if(!this.token) {
           router.push('/');
         }

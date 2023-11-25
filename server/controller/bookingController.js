@@ -60,11 +60,12 @@ module.exports = {
     },
     checkOut : async (req, res) => {
         try {
-            const customer = await User.findOne({ _id: req.user._id });
+            const { id } = req.body;
+            const customer = await User.findOne({ _id: id });
             if(!customer) {
                 return res.status(400).json({ message: "User not found" });
             }
-            const booking = await Booking.find({ user: customer._id });
+            const booking = await Booking.find({ user: customer._id, status: "process" });
             let totalCheckout = 0;
             let poinBooking = 0;
             booking.forEach( data => {
@@ -78,17 +79,19 @@ module.exports = {
             customer.saldo -= totalCheckout;
             poinBooking = totalCheckout / 10000;
             customer.poin += parseInt(poinBooking);
-            booking.status = "clear";
+            booking.forEach( async(data) => {
+                data.status = "clear";
+                await data.save();
+            })
 
             await customer.save();
-            await booking.save();
-            res.status(200).json({ booking: booking, user: customer });
+            res.status(200).json({ booking: booking, user: customer, total: totalCheckout });
         }
         catch(err) {
             res.status(500).json({ message: err.message });
         }
     },
-    checkOut : async (req, res) => {
+    viewCheckOut : async (req, res) => {
         try {
             const booking = await Booking.find({ user: req.user._id, status: "process" });
             booking.length === 0 ? res.status(404).json({ message : "No data booking found" }) : res.status(200).json(booking);
@@ -125,7 +128,7 @@ module.exports = {
                 return res.status(404).json({ message: "No data booking found" });
             }
 
-            await booking.remove()
+            await booking.deleteOne()
             res.status(200).json({ message: "Data booking deleted" });
         }
         catch(err) {

@@ -12,15 +12,15 @@
             <v-container>
                 <v-row>
                 <v-col cols="6">
-                    <div>{{ cTransDetail.invoice }}</div>
+                    <div>Invoice : {{ cTransDetail.invoice }}</div>
                 </v-col>
                 <v-col cols="6">
-                    <div>{{ cTransDetail.produk.name }}</div>
+                    <div>Produk : {{ cTransDetail.produk.name }}</div>
                 </v-col>
                 </v-row>
                 <v-row>
                 <v-col cols="6">
-                    <div>{{ cTransDetail.produk.price }}</div>
+                    <div>Harga : {{ cTransDetail.produk.price }}</div>
                 </v-col>
                 <v-col cols="6">
                   <v-text-field
@@ -34,7 +34,7 @@
                 </v-row>
                 <v-row>
                 <v-col cols="12">
-                    <div>{{ cTransDetail.total }}</div>
+                    <div>Total Harga : {{ cTransDetail.total }}</div>
                 </v-col>
                 </v-row>
                 <hr/>
@@ -70,6 +70,9 @@
       <v-layout>
         <v-main style="min-height: 700px;">
           <v-container fluid>
+            <br/>
+            <v-btn width="50%" :to="{ name: 'CartTransaksi' }">Makanan & Minuman</v-btn>
+            <v-btn width="50%" :to="{ name: 'CartBooking' }">Booking</v-btn>
             <v-table
               fixed-header
             >
@@ -102,9 +105,23 @@
                 >
                   <td>{{ transaksi.invoice }}</td>
                   <td>{{ transaksi.produk.name }}</td>
-                  <td>{{ transaksi.produk.price }}</td>
+                  <td>
+                    {{ 
+                      new Intl.NumberFormat("en-ID", {
+                        style: "currency",
+                        currency: "IDR"
+                      }).format(transaksi.produk.price)
+                    }}
+                  </td>
                   <td>{{ transaksi.jumlah }}</td>
-                  <td>{{ transaksi.total }}</td>
+                  <td>
+                    {{ 
+                      new Intl.NumberFormat("en-ID", {
+                        style: "currency",
+                        currency: "IDR"
+                      }).format(transaksi.total)
+                    }}
+                  </td>
                   <td>
                     <v-btn
                       color="green-darken-4"
@@ -122,20 +139,33 @@
                     </v-btn>
                   </td>
                 </tr>
+                <tr>
+                  <td rowspan="6" >
+                    Total Checkout : 
+                    {{
+                      new Intl.NumberFormat("en-ID", {
+                        style: "currency",
+                        currency: "IDR"
+                      }).format(totCheck)
+                    }}
+                  </td>
+                </tr>
               </tbody>
             </v-table>
           </v-container>
         </v-main>
       </v-layout>
       <hr/>
-      <v-spacer></v-spacer>
-      <v-btn
-        color="green-darken-4"
-        variant="text"
-        type="submit"
-      >
-        Checkout
-      </v-btn>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="green-darken-4"
+          variant="text"
+          type="submit"
+        >
+          Checkout
+        </v-btn>
+      </v-card-actions>
     </v-form>
   </v-card>
   </template>
@@ -150,12 +180,25 @@
           token: JSON.parse(localStorage.getItem("token-customer")),
           customer: JSON.parse(localStorage.getItem("customer")),
           cTransaksi: {},
+          totCheck: 0,
           showDetail: null,
           cTransDetail: null,
           editJumlah: 0
         }
       },
       methods: {
+        async loadAuth() {
+          const data = await axios.get('user/read/'+ this.customer.data._id, {
+            headers: {
+              Authorization: 'Bearer ' + this.token
+            }
+          })
+          .catch(() => {
+            localStorage.removeItem('customer');
+            localStorage.removeItem('token-customer');
+            router.go();
+          })
+        },
         async loadChartTransaksi() {
           await axios.get('transaksi/read_checkout', {
             headers: {
@@ -164,6 +207,9 @@
           })
           .then((res) => {
             this.cTransaksi = res.data;
+            Object.keys(this.cTransaksi).forEach((key) => {
+             this.totCheck += this.cTransaksi[key].total
+            })
           })
         },
         async openDetail(data, show) {
@@ -194,7 +240,7 @@
             }
           })
           .then((res) => {
-            let dt = res.data.transaksi;
+            // let dt = res.data.transaksi;
             Swal.fire({
               customClass: {
                 container: "my-swal"
@@ -203,24 +249,28 @@
               icon: "success",
               html: `
                 ${
-                  dt.forEach((data) => {
+                  // dt.forEach((data) => {
+                  // `<p>
+                  //   invoice         : ${data.invoice}<br/>
+                  //   Produk          : ${data.produk.name}<br/>
+                  //   Harga           : ${data.produk.price}<br/>
+                  //   Jumlah Pesanan  : ${data.jumlah}<br/>
+                  //   <hr/>
+                  //   Total Harga     : ${data.total}<br/>
+                  // </p>`
+                  // })
                   `<p>
-                    invoice         : ${data.invoice}<br/>
-                    Produk          : ${data.produk.name}<br/>
-                    Harga           : ${data.produk.price}<br/>
-                    Jumlah Pesanan  : ${data.jumlah}<br/>
-                    <hr/>
-                    Total Harga     : ${data.total}<br/>
-                  </p>`
-                  })
-                  `<p>
-                    Total Checkout  : ${res.data.total}
+                    Total Checkout  : ${
+                        new Intl.NumberFormat("en-ID", {
+                        style: "currency",
+                        currency: "IDR"
+                      }).format(res.data.total)
+                    }
                   </p>`
                 }
               `,
-              cancelButtonText: "OK"
             }).then((result) => {
-              if(result.isDismissed) {
+              if(result.isConfirmed) {
                 router.go();
               }
             })
@@ -264,6 +314,10 @@
         }
       },
       beforeMount() {
+        if(this.customer || this.token) {
+            this.loadAuth();
+        }
+        
         if(!this.token) {
           router.push('/');
         }

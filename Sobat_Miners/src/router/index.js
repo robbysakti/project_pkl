@@ -39,6 +39,22 @@ const routes = [
         component: () => import(/* webpackChunkName: "home" */ '@/views/customer/KeranjangTransaksi.vue'),
       },
       {
+        path: 'booking',
+        name: 'Booking',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/customer/Booking.vue'),
+      },
+      {
+        path: 'cart_booking',
+        name: 'CartBooking',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/customer/KeranjangBooking.vue'),
+      },
+      {
         path: 'info',
         name: 'InfoDiri',
         // route level code-splitting
