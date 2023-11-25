@@ -24,15 +24,15 @@ module.exports = {
             if(!produk) {
                 return res.status(400).json({ message: "Produk not found" });
             }
-
-            let bookingEndDate = new Date(bookingStartDate.valueOf() + (jumlah * 60000));
+            const startDate = new Date(bookingStartDate);
+            const endDate = new Date(startDate.valueOf() + (jumlah * 3600000));
             let total = produk.produkPrice * jumlah;
             // let tax = total * 0.1;
 
             const invoice = Math.floor(1000000 + Math.random() * 900000);
             const newBooking = {
-                bookingStartDate,
-                bookingEndDate,
+                bookingStartDate : startDate,
+                bookingEndDate : endDate,
                 invoice,
                 produk : {
                     _id : produk.id,
@@ -45,12 +45,16 @@ module.exports = {
             }
             const booking = await Booking.create(newBooking);
 
-            res.status(201).json({ message: "Success Booking", booking: booking });
+            res.status(201).json({ 
+                message: "Success Booking", 
+                booking: newBooking, 
+                waktu: {
+                    start: startDate.toLocaleString(),
+                    end: endDate.toLocaleString()
+                }
+            });
         }
         catch(err) {
-            if(req.file) {
-                await fs.unlink(path.join(`public/images/${req.file.filename}`));
-            }
             res.status(500).json({ message: err.message });
         }
     },

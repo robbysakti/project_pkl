@@ -147,7 +147,7 @@
       <v-card-title class="text-amber-darken-1 bg-green-darken-4">
         <span class="text-h5">Pesan</span>
       </v-card-title>
-      <v-form validate-on="submit lazy" @submit.prevent="">
+      <v-form validate-on="submit lazy" @submit.prevent="tambahBooking()">
           <v-card-text>
               <v-container>
                   <v-row>
@@ -187,11 +187,14 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12">
+                    <v-col cols="6">
+                      <VueDatePicker v-model="startBook"></VueDatePicker>
+                    </v-col>
+                    <v-col cols="6">
                       <v-text-field
-                      label="Jumlah Pesanan"
+                      label="Lama booking per jam"
                       clearable
-                      v-model="jumlah"
+                      v-model="perJam"
                       :rules="rules"
                       ></v-text-field>
                     </v-col>
@@ -223,6 +226,8 @@
 <script>
   import axios from '@/services/api';
   import Swal from 'sweetalert2';
+  import VueDatePicker from '@vuepic/vue-datepicker';
+  import '@vuepic/vue-datepicker/dist/main.css';
 
   export default {
     name: "produk-list",
@@ -238,8 +243,13 @@
         modalPesan: false,
         modalBooking: false,
         AddChart: {},
-        jumlah: 1
+        jumlah: 1,
+        startBook: null,
+        perJam: null
       };
+    },
+    components: {
+      VueDatePicker
     },
     methods: {
       async loadProduk() {
@@ -299,33 +309,39 @@
           })
         })
       },
-      // async tambahBooking() {
-      //   await axios.post('booking/create', {
-      //     produkId : this.AddChart._id,
-      //     jumlah : parseInt(this.jumlah)
-      //   })
-      //   .then((res) => {
-      //     this.modalBooking = false;
-      //     let dt = res.data.booking;
-      //     Swal.fire({
-      //       customClass: {
-      //         container: "my-swal"
-      //       },
-      //       title: "Berhasil ditambah ke keranjang!",
-      //       icon: "success",
-      //       html: `
-      //         <p>
-      //           invoice         : ${dt.invoice}<br/>
-      //           Produk          : ${dt.produk.name}<br/>
-      //           Harga           : ${dt.produk.price}<br/>
-      //           Jumlah Pesanan  : ${dt.jumlah}<br/>
-      //           <hr/>
-      //           Total Harga     : ${dt.total}<br/>
-      //         </p>
-      //       `
-      //     })
-      //   })
-      // }
+      async tambahBooking() {
+        await axios.post('booking/create', {
+          produkId : this.AddChart._id,
+          bookingStartDate : this.startBook,
+          jumlah : parseInt(this.perJam)
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + this.token
+          }
+        })
+        .then((res) => {
+          this.modalBooking = false;
+          let dt = res.data.booking;
+          let wkt = res.data.waktu;
+          Swal.fire({
+            customClass: {
+              container: "my-swal"
+            },
+            title: "Berhasil ditambah ke keranjang!",
+            icon: "success",
+            html: `
+              <p>
+                invoice         : ${dt.invoice}<br/>
+                Produk          : ${dt.produk.name}<br/>
+                Harga           : ${dt.produk.price}<br/>
+                Jumlah Pesanan  : ${wkt.start} - ${wkt.end}<br/>
+                <hr/>
+                Total Harga     : ${dt.total}<br/>
+              </p>
+            `
+          })
+        })
+      }
     },
     beforeMount() {
       if(this.customer || this.token) {
